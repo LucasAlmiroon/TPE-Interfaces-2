@@ -7,10 +7,9 @@ let ctx = canvas.getContext("2d");
 let fichasj1 = [];
 let fichasj2 = [];
 let tablero;
-let conFicha = false;
 let matriz = [];
 let cliqueado;
-let turno = false;
+let turno = true;
 let ganador = 0;
 
 
@@ -27,7 +26,7 @@ function crearMatriz(){
 
 function juegoNuevo(){
   crearMatriz();
-
+  
   let imageTablero = new Image();
   imageTablero.src = "./sites/img/tablero.png";
   imageTablero.onload = function(){
@@ -56,6 +55,7 @@ function juegoNuevo(){
       }
     }
   }
+  setTurno();
 
 }
 
@@ -100,13 +100,10 @@ function clickEnFicha(x,y){
 }
 
 function onMouseDown(e){
-  conFicha = true;
   cliqueado = clickEnFicha(e.layerX,e.layerY);
-  if (cliqueado != null && conFicha && ganador == 0) {
+  if (cliqueado != null && ganador == 0) {
     canvas.addEventListener('mousemove', e => {
-      if(conFicha){
         dibujado(e.layerX,e.layerY);
-      }
     });
     canvas.addEventListener('mouseup',onMouseUp);
   }else{
@@ -186,12 +183,18 @@ function setY(a){
 }
 
 function setTurno(){
-  if(turno){
-    turno = false;
-  }else{
-    turno = true;
+  let body = document.querySelector("#ganador");
+  if (ganador == 0){
+    if(turno){
+      turno = false;
+      body.innerHTML = "Turno jugador: 1"; 
+    }else{
+      turno = true;
+      body.innerHTML = "Turno jugador: 2";
+    }
   }
 }
+
 function chequearGanador(){
   let body = document.querySelector("#ganador");
   if (ganador == 1 || ganador == 2){
@@ -202,55 +205,58 @@ function chequearGanador(){
 }
 
 function onMouseUp(e){
-  let x = e.layerX;
-  let y;
-  conFicha = false;
-  if (x >= 214 && x <= 283){
-     y = setY(0);
-    dibujado(248,y);
-    setTurno();
-  }else if (x >= 298 && x <= 366){
-    y = setY(1);
-    dibujado(332,y);
-    dibujarFichas();
-    setTurno();
-  }else if (x >= 380 && x <= 448){
-    y = setY(2);
-    dibujado(414,y);
-    dibujarFichas();
-    setTurno();
-  }else if(x >= 467 && x <= 535){
-    y = setY(3);
-    dibujado(500,y)
-    dibujarFichas();
-    setTurno();
-  }else if(x >= 549 && x <= 615){
-    y = setY(4);
-    dibujado(583,y);
-    dibujarFichas();
-    setTurno();
-  }else if(x >= 634 && x <= 700){
-    y = setY(5);
-    dibujado(668,y);
-    dibujarFichas();
-    setTurno();
-  }else if(x >= 715 && x <= 785){
-    y = setY(6);
-    dibujado(749,y);
-    dibujarFichas();
-    setTurno();
-  }else{
-    if(!turno){
-      dibujado(50,50);
+  if(cliqueado != null){
+
+    let x = e.layerX;
+    let y;
+    if (x >= 214 && x <= 283){
+       y = setY(0);
+      dibujado(248,y);
+      setTurno();
+    }else if (x >= 298 && x <= 366){
+      y = setY(1);
+      dibujado(332,y);
       dibujarFichas();
+      setTurno();
+    }else if (x >= 380 && x <= 448){
+      y = setY(2);
+      dibujado(414,y);
+      dibujarFichas();
+      setTurno();
+    }else if(x >= 467 && x <= 535){
+      y = setY(3);
+      dibujado(500,y)
+      dibujarFichas();
+      setTurno();
+    }else if(x >= 549 && x <= 615){
+      y = setY(4);
+      dibujado(583,y);
+      dibujarFichas();
+      setTurno();
+    }else if(x >= 634 && x <= 700){
+      y = setY(5);
+      dibujado(668,y);
+      dibujarFichas();
+      setTurno();
+    }else if(x >= 715 && x <= 785){
+      y = setY(6);
+      dibujado(749,y);
+      dibujarFichas();
+      setTurno();
     }else{
-      dibujado(850,50);
-      dibujarFichas();
+      if(!turno){
+        dibujado(50,50);
+        dibujarFichas();
+      }else{
+        dibujado(850,50);
+        dibujarFichas();
+      }
     }
+    cliqueado = null;
+    console.log(cliqueado);
+    ganador = tablero.verificarTablero();
+    chequearGanador();
   }
-  cliqueado = null;
-  ganador = tablero.verificarTablero();
-  chequearGanador();
 }
 
 canvas.addEventListener('mousedown',onMouseDown,false);
